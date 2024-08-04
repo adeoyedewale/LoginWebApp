@@ -1,8 +1,8 @@
 pipeline {
     agent any
     tools {
-        maven "localMaven"
-        jdk "Java8"
+        maven "localmaven"
+        jdk "myjava"
     }
 
     environment {
@@ -11,11 +11,11 @@ pipeline {
         // This can be http or https
         NEXUS_PROTOCOL = "http"
         // Where your Nexus is running
-        NEXUS_URL = "65.2.189.169:8081"
+        NEXUS_URL = "127.0.0.1:8081"
         // Repository where we will upload the artifact
-        NEXUS_REPOSITORY = "LoginWebApp"
+        NEXUS_REPOSITORY = "loginwebapp"
         // Jenkins credential id to authenticate to Nexus OSS
-        NEXUS_CREDENTIAL_ID = "nexusCredential"
+        NEXUS_CREDENTIAL_ID = "nexus-user-credentials"
         ARTIFACT_VERSION = "${BUILD_NUMBER}"
     }
 
@@ -23,7 +23,7 @@ pipeline {
         stage("Check out") {
             steps {
                 script {
-                    git branch: 'feature/nexusUpload', url: 'https://github.com/ranjit4github/LoginWebApp.git';
+                    git branch: 'feature/nexusUpload', url: '';
                 }
             }
         }
@@ -76,18 +76,18 @@ pipeline {
                 }
             }
         }
-        stage ('Execute Ansible Play - CD'){
-            agent {
-                label 'ansible'
-            }
-            steps{
-                script {
-                    git branch: 'feature/ansibleNexus', url: 'https://github.com/ranjit4github/Ansible_Demo_Project.git';
-                }
-                sh '''
-                    ansible-playbook -e vers=${BUILD_NUMBER} roles/site.yml
-                '''
-            }
-        }
+        // stage ('Execute Ansible Play - CD'){
+        //     agent {
+        //         label 'ansible'
+        //     }
+        //     steps{
+        //         script {
+        //             git branch: 'feature/ansibleNexus', url: '';
+        //         }
+        //         sh '''
+        //             ansible-playbook -e vers=${BUILD_NUMBER} roles/site.yml
+        //         '''
+        //     }
+        // }
     }
 }
